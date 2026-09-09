@@ -1,6 +1,16 @@
+import hashlib
+
 # ITIS-3200 Lab 02 - Step 4 - Hashing Program
 # Elian Alkoutami
 # main.py
+
+def hash_file(filepath):
+    # Read the file in chunks so we don't load huge files into memory all at once
+    sha256 = hashlib.sha256()
+    with open(filepath, "rb") as f:
+        for chunk in iter(lambda: f.read(4096), b""):
+            sha256.update(chunk)
+        return sha256.hexdigest()
 
 def main():
     # Ask the user for what they want to do
