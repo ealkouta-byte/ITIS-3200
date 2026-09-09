@@ -30,6 +30,28 @@ def generate_table(directory):
         json.dump(file_hashes, f, indent=4)
     print("Hash table generated and saved to hash_table.json")
 
+def validate_hash(directory):
+    # Load the previously saved hash table
+    with open("hash_table.json", "r") as f:
+        old_hashes = json.load(f)
+
+    # Recompute hashes for what's currently in the directory
+    current_hashes = traverse_directory(directory)
+
+    # Check every file that was in the old table
+    for filepath, old_hash in old_hashes.items():
+        if filepath not in current_hashes:
+            print(f"{filepath} has been deleted")
+        elif current_hashes[filepath] == old_hash:
+            print(f"{filepath} hash is valid")
+        else:
+            print(f"{filepath} hash is invalid")
+
+    # Check for anything new that wasn't in the old table
+    for filepath in current_hashes:
+        if filepath not in old_hashes:
+            print(f"{filepath} is a new file")
+
 def main():
     # Ask the user for what they want to do
     print("1. Generate a new hash table")
@@ -41,7 +63,8 @@ def main():
         directory = input("Enter the directory to hash: ")
         generate_table(directory)
     elif choice == "2":
-        print("Verify hashes selected")
+        directory = input("Enter the directory to validate: ")
+        validate_hash(directory)
     else:
         print("Invalid choice. Please enter 1 or 2.")
         return
